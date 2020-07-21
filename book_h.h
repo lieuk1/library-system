@@ -1,10 +1,10 @@
-/*******************************************
+/********************************************************************
 * Name          : Kristella Lieu
 * Date Created  : July 18, 2020
-* Last Modified : July 18, 2020
+* GitHub Link   : https://github.com/lieuk1/library-system.git
 *
 * Project	    : Library Management System
-********************************************/
+*********************************************************************/
 
 /******************************
 *		 BOOK HEADER FILE
