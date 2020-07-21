@@ -9,7 +9,11 @@ using namespace std;
 * FUNCTION DECLARATIONS
 ************************/
 
-void file_book(); // CREATE BOOK AND WRITE TO BINARY FILE
+void search_bk(string title); // SEARCH FOR BOOK FROM FILE
+void check_in_out(int option, long long isbn); // UPDATE BOOK STATUS IN FILE
+void file_bk(); // CREATE BOOK AND WRITE TO FILE
+void delete_bk(long long isbn); // DELETE BOOK FROM FILE
+
 
 /***********************
 *         MAIN
@@ -19,7 +23,7 @@ int main() {
 
 	int opt;
 	do {
-		cout << "\tLIBRARY COMPUTER SYSTEM\n";
+		cout << "LIBRARY COMPUTER SYSTEM\n";
 		cout << "\t0. QUIT\n";
 		cout << "\t1. SEARCH\n";
 		cout << "\t2. CHECK IN\n";
@@ -38,33 +42,66 @@ int main() {
 		string password;
 		string ADMIN_PASSWORD = "bookish19";
 
+		string title;
+		long long isbn;
+
 		switch(opt) {
 			// QUIT
 			case 0:
 				break;
 			// SEARCH
 			case 1:
+				cout << "Enter title : ";
+				cin.ignore();
+				getline(cin, title);
+				cout << "\n";
+
+				search_bk(title);
+
 				break;
 			// CHECK IN
 			case 2:
+				cout << "Enter book ISBN (13 digits) : ";
+				cin >> isbn;
+
+				check_in_out(1, isbn);
+
 				break;
 			// CHECK OUT
 			case 3:
+				cout << "Enter book ISBN (13 digits) : ";
+				cin >> isbn;
+
+				check_in_out(2, isbn);
+
 				break;
-			// ADD/DELETE (ADMIN)
+			// ADD (ADMIN)
 			case 4:
 				cout << "Enter admin password : ";
 				cin.ignore();
 				getline(cin, password);
 
 				if(password == ADMIN_PASSWORD)
-					file_book();
+					file_bk();
 				else
 					cout << "Incorrect password.\n";
 
 				break;
 			// DELETE (ADMIN)
 			case 5:
+				cout << "Enter admin password : ";
+				cin.ignore();
+				getline(cin, password);
+
+				if(password == ADMIN_PASSWORD) {
+					cout << "Enter book ISBN (13 digits) : ";
+					cin >> isbn;
+					delete_bk(isbn);
+				}
+				else {
+					cout << "Incorrect password.\n";
+				}
+
 				break;
 			// MODIFY (ADMIN)
 			case 6:
@@ -83,7 +120,79 @@ int main() {
 * FUNCTION DEFINITIONS
 ***********************/
 
-void file_book() {
+void search_bk(string title) {
+	Book bk;
+	bool found = false;
+
+	ifstream inFS;
+	inFS.open("books.dat", ios::binary);
+	if(!inFS) {
+		cout << "File could not open.\n";
+		return;
+	}
+
+	while(inFS.read(reinterpret_cast<char *> (&bk), sizeof(Book))) {
+		// IF TITLE FOUND, PRINT BOOK INFORMATIOn
+		if(bk.get_title() == title) {
+			found = true;
+			bk.show_book();
+			cout << "\n";
+		}
+	}
+
+	inFS.close();
+
+	if(!found)
+		cout << "No results found.\n\n";
+}
+
+void check_in_out(int option, long long isbn) {
+	Book bk;
+	bool found = false;
+
+	fstream File;
+	File.open("books.dat", ios::binary | ios::in | ios::out);
+	if(!File) {
+		cout << "File could not open.\n";
+		return;
+	}
+
+	while(!File.eof() && !found) {
+
+		File.read(reinterpret_cast<char *> (&bk), sizeof(Book));
+
+		if(bk.get_isbn() == isbn) {
+			found = true;
+			
+			// CHECK IN
+			if(option == 1) {
+				cout << "Checking in book... ";
+				bk.set_status('A');
+				cout << "\nBook checked in.\n\n";
+			}
+			// CHECK OUT
+			else if(option == 2) {
+				cout << "Checking out book... ";
+				bk.set_status('U');
+				cout << "\nBook checked out.\n\n";
+			}
+		}
+
+		int pos = (-1)*static_cast<int>(sizeof(Book));
+		File.seekp(pos, ios::cur);
+		File.write(reinterpret_cast<char *> (&bk), sizeof(Book));
+		
+
+	} // WHILE LOOP END
+
+	File.close();
+
+	if(!found) {
+		cout << "\nNo results found.\n\n";
+	}
+}
+
+void file_bk() {
 	Book bk;
 	bk.create_book();
 
@@ -91,4 +200,33 @@ void file_book() {
 	outFS.open("books.dat", ios::binary | ios::app);
 	outFS.write(reinterpret_cast<char *> (&bk), sizeof(Book));
 	outFS.close();
+}
+
+	// ADD CONFIRMATION PROMPT
+void delete_bk(long long isbn) {
+	Book bk;
+
+	ifstream inFS;
+	ofstream outFS;
+
+	inFS.open("books.dat", ios::binary);
+	if(!inFS) {
+		cout << "File could not open.\n";
+		return;
+	}
+
+	outFS.open("temp.dat", ios::binary);
+	//inFS.seekg(0, ios::beg);
+
+	while(inFS.read(reinterpret_cast<char *> (&bk), sizeof(Book))) {
+		if(bk.get_isbn() != isbn) {
+			outFS.write(reinterpret_cast<char *> (&bk), sizeof(Book));
+		}
+	}
+
+	inFS.close();
+	outFS.close();
+
+	remove("books.dat");
+	rename("temp.dat", "books.dat");
 }
