@@ -1,18 +1,19 @@
 #include <iostream>
 #include <limits> // numeric_limits
+#include <fstream>
 #include "book_h.h"
 	// STUDENT HEADER ?
 using namespace std;
 
-/*
-Enter system as student or admin
-Student
-	Search books
-	Check in/out books
-Admin
-	Add/delete books
-	Modify books
-*/
+/***********************
+* FUNCTION DECLARATIONS
+************************/
+
+void file_book(); // CREATE BOOK AND WRITE TO BINARY FILE
+
+/***********************
+*         MAIN
+************************/
 
 int main() {
 
@@ -33,19 +34,57 @@ int main() {
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
 
-		// QUIT
-		if(opt == 0) {
-			break;
+		string password;
+		string ADMIN_PASSWORD = "bookish19";
+
+		switch(opt) {
+			// QUIT
+			case 0:
+				break;
+			// SEARCH
+			case 1:
+				break;
+			// CHECK IN
+			case 2:
+				break;
+			// CHECK OUT
+			case 3:
+				break;
+			// ADD/DELETE (ADMIN)
+			case 4:
+				cout << "Enter admin password : ";
+				cin.ignore();
+				getline(cin, password);
+
+				if(password == ADMIN_PASSWORD)
+					file_book();
+				else
+					cout << "Incorrect password.\n";
+
+				break;
+			// MODIFY (ADMIN)
+			case 5:
+				break;
+			// DEFAULT
+			default:
+				break;
 		}
 
-		else if(opt == 1) {
-
-		}
-
-		else if(opt == 2) {
-
-		}
-	} while(opt != 0);
+	} while(opt != 0); // DO WHILE END
 
 	return 0;
 } // MAIN END
+
+/**********************
+* FUNCTION DEFINITIONS
+***********************/
+
+void file_book() {
+	Book bk;
+	bk.create_book();
+
+	ofstream outFS;
+	outFS.open("books.dat", ios::binary | ios::app);
+	outFS.write(reinterpret_cast<char *> (&bk), sizeof(Book));
+	outFS.close();
+}
