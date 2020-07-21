@@ -26,9 +26,9 @@ int main() {
 		cout << "\t4. ADD/DELETE (ADMIN)\n";
 		cout << "\t5. MODIFY (ADMIN)\n";
 
-			// EDIT ERROR CHECK
-		while(cout << "Enter : " && (!(cin >> opt) || (opt != 0 && opt != 1 && opt != 2))) {
-			cout << "-> Invalid input <-\n";
+		cout << "Enter option : ";
+		while(!(cin >> opt) || opt < 0 || opt > 5) {
+			cout << "Invalid input. Enter option : ";
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
