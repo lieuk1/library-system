@@ -1,6 +1,7 @@
 /********************************************************************
 * Name          : Kristella Lieu
-* Date Created  : July 18, 2020
+* Date Created  : 2020 July 18
+* Last Modified : 2020 July 21
 * GitHub Link   : https://github.com/lieuk1/library-system.git
 *
 * Project	    : Library Management System
@@ -19,6 +20,7 @@ using namespace std;
 class Book {
 	public:
 		void create_book();
+		void show_book();
 
 		void set_title(char* title);
 		void set_author(char* author);

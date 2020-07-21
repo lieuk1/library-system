@@ -17,8 +17,15 @@ void Book::create_book() {
 	cout << "Enter book ISBN : ";
 	cin >> isbn_;
 
-	cout << "Enter book status (a/u) : ";
+	cout << "Enter book status (A/U) : ";
 	cin >> status_;
+}
+
+void Book::show_book() {
+	cout << "Title  : " << title_ << endl;
+	cout << "Author : " << author_ << endl;
+	cout << "ISBN   : " << isbn_ << endl;
+	cout << "Status : " << status_ <<endl;
 }
 
 /*****************
