@@ -24,11 +24,12 @@ int main() {
 		cout << "\t1. SEARCH\n";
 		cout << "\t2. CHECK IN\n";
 		cout << "\t3. CHECK OUT\n";
-		cout << "\t4. ADD/DELETE (ADMIN)\n";
-		cout << "\t5. MODIFY (ADMIN)\n";
+		cout << "\t4. ADD (ADMIN)\n";
+		cout << "\t5. DELETE (ADMIN)\n";
+		cout << "\t6. MODIFY (ADMIN)\n";
 
 		cout << "Enter option : ";
-		while(!(cin >> opt) || opt < 0 || opt > 5) {
+		while(!(cin >> opt) || opt < 0 || opt > 6) {
 			cout << "Invalid input. Enter option : ";
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -62,8 +63,11 @@ int main() {
 					cout << "Incorrect password.\n";
 
 				break;
-			// MODIFY (ADMIN)
+			// DELETE (ADMIN)
 			case 5:
+				break;
+			// MODIFY (ADMIN)
+			case 6:
 				break;
 			// DEFAULT
 			default:
