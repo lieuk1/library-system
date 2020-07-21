@@ -25,7 +25,7 @@ int main() {
 	do {
 		cout << "LIBRARY COMPUTER SYSTEM\n";
 		cout << "\t0. QUIT\n";
-		cout << "\t1. SEARCH\n";
+		cout << "\t1. SEARCH\n";	// ADD OPTION TO SEARCH BY ?
 		cout << "\t2. CHECK IN\n";
 		cout << "\t3. CHECK OUT\n";
 		cout << "\t4. ADD (ADMIN)\n";
@@ -62,7 +62,11 @@ int main() {
 			// CHECK IN
 			case 2:
 				cout << "Enter book ISBN (13 digits) : ";
-				cin >> isbn;
+				while(!(cin >> isbn)) {
+					cout << "Invalid input. Enter book ISBN : ";
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
 
 				check_in_out(1, isbn);
 
@@ -70,7 +74,11 @@ int main() {
 			// CHECK OUT
 			case 3:
 				cout << "Enter book ISBN (13 digits) : ";
-				cin >> isbn;
+				while(!(cin >> isbn)) {
+					cout << "Invalid input. Enter book ISBN : ";
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
 
 				check_in_out(2, isbn);
 
@@ -81,10 +89,13 @@ int main() {
 				cin.ignore();
 				getline(cin, password);
 
-				if(password == ADMIN_PASSWORD)
+				if(password == ADMIN_PASSWORD) {
 					file_bk();
-				else
-					cout << "Incorrect password.\n";
+					cout << "Book added.\n\n";
+				}
+				else {
+					cout << "Incorrect password.\n\n";
+				}
 
 				break;
 			// DELETE (ADMIN)
@@ -95,11 +106,17 @@ int main() {
 
 				if(password == ADMIN_PASSWORD) {
 					cout << "Enter book ISBN (13 digits) : ";
-					cin >> isbn;
+					while(!(cin >> isbn)) {
+						cout << "Invalid input. Enter book ISBN : ";
+						cin.clear();
+						cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					}
+					
 					delete_bk(isbn);
+					cout << "\n";
 				}
 				else {
-					cout << "Incorrect password.\n";
+					cout << "Incorrect password.\n\n";
 				}
 
 				break;
@@ -178,18 +195,18 @@ void check_in_out(int option, long long isbn) {
 			}
 		}
 
+		// MODIFY BOOK STATUS IN FILE
 		int pos = (-1)*static_cast<int>(sizeof(Book));
 		File.seekp(pos, ios::cur);
 		File.write(reinterpret_cast<char *> (&bk), sizeof(Book));
 		
-
 	} // WHILE LOOP END
 
 	File.close();
 
-	if(!found) {
+	if(!found)
 		cout << "\nNo results found.\n\n";
-	}
+
 }
 
 void file_bk() {
@@ -205,6 +222,7 @@ void file_bk() {
 	// ADD CONFIRMATION PROMPT
 void delete_bk(long long isbn) {
 	Book bk;
+	bool found = false;
 
 	ifstream inFS;
 	ofstream outFS;
@@ -216,17 +234,21 @@ void delete_bk(long long isbn) {
 	}
 
 	outFS.open("temp.dat", ios::binary);
-	//inFS.seekg(0, ios::beg);
 
 	while(inFS.read(reinterpret_cast<char *> (&bk), sizeof(Book))) {
-		if(bk.get_isbn() != isbn) {
+		if(bk.get_isbn() != isbn)
 			outFS.write(reinterpret_cast<char *> (&bk), sizeof(Book));
-		}
+		else if(bk.get_isbn() == isbn)
+			found = true;
 	}
 
 	inFS.close();
 	outFS.close();
 
+	if(!found)
+		cout << "\nNo results found.\n";
+
+	// REMOVE OLD FILE AND RENAME NEW FILE NOT INCLUDING GIVEN BOOK
 	remove("books.dat");
 	rename("temp.dat", "books.dat");
 }
