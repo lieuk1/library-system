@@ -13,6 +13,7 @@ void search_bk(string title); // SEARCH FOR BOOK FROM FILE
 void check_in_out(int option, long long isbn); // UPDATE BOOK STATUS IN FILE
 void file_bk(); // CREATE BOOK AND WRITE TO FILE
 void delete_bk(long long isbn); // DELETE BOOK FROM FILE
+void modify_bk(int option, long long isbn); // MODIFY BOOK INFO
 
 
 /***********************
@@ -122,6 +123,37 @@ int main() {
 				break;
 			// MODIFY (ADMIN)
 			case 6:
+				cout << "Enter admin password : ";
+				cin.ignore();
+				getline(cin, password);
+
+				if(password == ADMIN_PASSWORD) {
+					cout << "\tMODIFICATION MENU\n";
+					cout << "\t1. Title\n";
+					cout << "\t2. Author\n";
+					cout << "\t3. ISBN\n";
+
+					cout << "Enter option : ";
+					while(!(cin >> opt) || opt < 1 || opt > 3) {
+						cout << "Invalid input. Enter option : ";
+						cin.clear();
+						cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					}
+
+					cout << "Enter book ISBN (13 digits) : ";
+					while(!(cin >> isbn)) {
+						cout << "Invalid input. Enter book ISBN : ";
+						cin.clear();
+						cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					}
+
+					modify_bk(opt, isbn);
+					cout << "\n";
+				}
+				else {
+					cout << "Incorrect password.\n\n";
+				}
+
 				break;
 			// DEFAULT
 			default:
@@ -137,6 +169,7 @@ int main() {
 * FUNCTION DEFINITIONS
 ***********************/
 
+	// MAKE CHECK ALL LOWER CASE TITLES
 void search_bk(string title) {
 	Book bk;
 	bool found = false;
@@ -251,4 +284,63 @@ void delete_bk(long long isbn) {
 	// REMOVE OLD FILE AND RENAME NEW FILE NOT INCLUDING GIVEN BOOK
 	remove("books.dat");
 	rename("temp.dat", "books.dat");
+}
+
+void modify_bk(int option, long long isbn) {
+	Book bk;
+	bool found = false;
+
+	fstream File;
+	File.open("books.dat", ios::binary | ios::in | ios::out);
+	if(!File) {
+		cout << "File could not open.\n";
+		return;
+	}
+
+	while(!File.eof() && found == false) {
+
+		File.read(reinterpret_cast<char *> (&bk), sizeof(Book));
+
+		if(bk.get_isbn() == isbn) {
+			cout << "\n";
+			bk.show_book();
+			cout << "\n";
+
+				// ADD ERROR CHECKING
+			if(option == 1) {
+				char title[50];
+				cout << "Enter new title : ";
+				cin.ignore();
+				cin.getline(title, 50);
+				bk.set_title(title);
+			}
+			else if(option == 2) {
+				char author[50];
+				cout << "Enter new author : ";
+				cin.ignore();
+				cin.getline(author, 50);
+				bk.set_author(author);
+			}
+			else if(option == 3) {
+				long long isbn;
+				cout << "Enter new ISBN (13 digits) : ";
+				cin >> isbn;
+				bk.set_isbn(isbn);
+			}
+
+			int pos = (-1)*static_cast<int>(sizeof(bk));
+			File.seekp(pos, ios::cur);
+			File.write(reinterpret_cast<char *> (&bk), sizeof(Book));
+			cout << "Modified book.\n\n";
+			bk.show_book();
+			found = true;
+		}
+
+	}
+
+	File.close();
+
+	if(!found)
+		cout << "\nNo results found.\n";
+
 }
