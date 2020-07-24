@@ -252,8 +252,23 @@ void file_bk() {
 	outFS.close();
 }
 
-	// ADD CONFIRMATION PROMPT
 void delete_bk(long long isbn) {
+	// CONFIRMATION PROMPT
+	char confirm;
+	cout << "Confirm deletion (y/n) : ";
+	while(!(cin >> confirm) || (confirm != 'y' && confirm != 'n')) {
+		cout << "Invalid input. Confirm deletion (y/n) : ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	// IF NOT CONFIRMED. EXIT FUNC
+	if(confirm == 'n') {
+		cout << "Deletion canceled.\n";
+		return;
+	}
+
+	// IF CONFIRMED.
 	Book bk;
 	bool found = false;
 
@@ -267,6 +282,7 @@ void delete_bk(long long isbn) {
 	}
 
 	outFS.open("temp.dat", ios::binary);
+	inFS.seekg(0, ios::beg);
 
 	while(inFS.read(reinterpret_cast<char *> (&bk), sizeof(Book))) {
 		if(bk.get_isbn() != isbn)
@@ -280,8 +296,10 @@ void delete_bk(long long isbn) {
 
 	if(!found)
 		cout << "\nNo results found.\n";
+	else
+		cout  <<"Deletion confirmed.\n";
 
-	// REMOVE OLD FILE AND RENAME NEW FILE NOT INCLUDING GIVEN BOOK
+	// REMOVES OLD FILE AND RENAMES NEW FILE NOT INCLUDING GIVEN BOOK
 	remove("books.dat");
 	rename("temp.dat", "books.dat");
 }
