@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits> // numeric_limits
 #include <cstring> // strcpy
 #include "book_h.h"
 using namespace std;
@@ -15,10 +16,20 @@ void Book::create_book() {
 	cin.getline(author_, 50);
 
 	cout << "Enter book ISBN : ";
-	cin >> isbn_;
+	while(!(cin >> isbn_)) {
+		cout << "Invalid input. Enter book ISBN : ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
 
-	cout << "Enter book status (A/U) : ";
-	cin >> status_;
+	char stat;
+	cout << "Enter book status (a/u) : ";
+	while(!(cin >> stat) || (stat != 'a' && stat != 'u')) {
+		cout << "Invalid input. Enter book status (a/u) : ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+	status_ = stat;
 }
 
 void Book::show_book() {
