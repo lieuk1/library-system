@@ -130,7 +130,7 @@ int main() {
 				// CORRECT PASSWORD
 				if(password == ADMIN_PASSWORD) {
 					cout << "\tMODIFICATION MENU\n";
-					cout << "\tQUIT\n";
+					cout << "\t0. QUIT\n";
 					cout << "\t1. Title\n";
 					cout << "\t2. Author\n";
 					cout << "\t3. ISBN\n";
