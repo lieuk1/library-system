@@ -127,29 +127,39 @@ int main() {
 				cin.ignore();
 				getline(cin, password);
 
+				// CORRECT PASSWORD
 				if(password == ADMIN_PASSWORD) {
 					cout << "\tMODIFICATION MENU\n";
+					cout << "\tQUIT\n";
 					cout << "\t1. Title\n";
 					cout << "\t2. Author\n";
 					cout << "\t3. ISBN\n";
 
 					cout << "Enter option : ";
-					while(!(cin >> opt) || opt < 1 || opt > 3) {
+					while(!(cin >> opt) || opt < 0 || opt > 3) {
 						cout << "Invalid input. Enter option : ";
 						cin.clear();
 						cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					}
 
-					cout << "Enter book ISBN (13 digits) : ";
-					while(!(cin >> isbn)) {
-						cout << "Invalid input. Enter book ISBN : ";
-						cin.clear();
-						cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					// QUIT
+					if(opt == 0) {
+						break;
 					}
+					// OPTION 1-3
+					else {
+						cout << "Enter book ISBN (13 digits) : ";
+						while(!(cin >> isbn)) {
+							cout << "Invalid input. Enter book ISBN : ";
+							cin.clear();
+							cin.ignore(numeric_limits<streamsize>::max(), '\n');
+						}
 
-					modify_bk(opt, isbn);
-					cout << "\n";
+						modify_bk(opt, isbn);
+						cout << "\n";
+					}
 				}
+				// INCORRECT PASSWORD
 				else {
 					cout << "Incorrect password.\n\n";
 				}
@@ -158,7 +168,7 @@ int main() {
 			// DEFAULT
 			default:
 				break;
-		}
+		} // SWITCH END
 
 	} while(opt != 0); // DO WHILE END
 
@@ -182,8 +192,7 @@ void search_bk(string title) {
 
 	while(inFS.read(reinterpret_cast<char *> (&bk), sizeof(Book))) {
 		// IF TITLE FOUND, PRINT BOOK INFORMATION
-		// CHECKS AS LOWERCASE
-		if(bk.get_title().lower() == title.lower()) {
+		if(bk.get_title() == title) {
 			found = true;
 			bk.show_book();
 			cout << "\n";
@@ -344,7 +353,7 @@ void modify_bk(int option, long long isbn) {
 				while(!(cin >> isbn)) {
 					cout << "Invalid input. Enter new ISBN : ";
 					cin.clear();
-					cin.ignore(numeric_limits<streamsize>::max(), '\n')
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				}
 				bk.set_isbn(isbn);
 			}
