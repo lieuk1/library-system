@@ -324,7 +324,6 @@ void modify_bk(int option, long long isbn) {
 			bk.show_book();
 			cout << "\n";
 
-				// ADD ERROR CHECKING
 			if(option == 1) {
 				char title[50];
 				cout << "Enter new title : ";
@@ -342,7 +341,11 @@ void modify_bk(int option, long long isbn) {
 			else if(option == 3) {
 				long long isbn;
 				cout << "Enter new ISBN (13 digits) : ";
-				cin >> isbn;
+				while(!(cin >> isbn)) {
+					cout << "Invalid input. Enter new ISBN : ";
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n')
+				}
 				bk.set_isbn(isbn);
 			}
 
