@@ -169,7 +169,6 @@ int main() {
 * FUNCTION DEFINITIONS
 ***********************/
 
-	// MAKE CHECK ALL LOWER CASE TITLES
 void search_bk(string title) {
 	Book bk;
 	bool found = false;
@@ -182,8 +181,9 @@ void search_bk(string title) {
 	}
 
 	while(inFS.read(reinterpret_cast<char *> (&bk), sizeof(Book))) {
-		// IF TITLE FOUND, PRINT BOOK INFORMATIOn
-		if(bk.get_title() == title) {
+		// IF TITLE FOUND, PRINT BOOK INFORMATION
+		// CHECKS AS LOWERCASE
+		if(bk.get_title().lower() == title.lower()) {
 			found = true;
 			bk.show_book();
 			cout << "\n";
@@ -217,13 +217,13 @@ void check_in_out(int option, long long isbn) {
 			// CHECK IN
 			if(option == 1) {
 				cout << "Checking in book... ";
-				bk.set_status('A');
+				bk.set_status('a');
 				cout << "\nBook checked in.\n\n";
 			}
 			// CHECK OUT
 			else if(option == 2) {
 				cout << "Checking out book... ";
-				bk.set_status('U');
+				bk.set_status('u');
 				cout << "\nBook checked out.\n\n";
 			}
 		}

@@ -1,7 +1,7 @@
 /********************************************************************
 * Name          : Kristella Lieu
 * Date Created  : 2020 July 18
-* Last Modified : 2020 July 21
+* Last Modified : 2020 July 26
 * GitHub Link   : https://github.com/lieuk1/library-system.git
 *
 * Project	    : Library Management System
@@ -35,7 +35,7 @@ class Book {
 	private:
 		char title_[50];
 		char author_[50];
-		char status_; // A/U, AVAILABLE/UNAVAILABLE
+		char status_; // a/u, AVAILABLE/UNAVAILABLE
 		long long isbn_; // 13 DIGITS
 };
 
